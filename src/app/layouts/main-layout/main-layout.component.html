@@ -1,0 +1,31 @@
+<div class="app-container">
+  <!-- Sidebar component -->
+  <app-sidebar 
+    [collapsed]="sidebarCollapsed" 
+    [activeSection]="activeSection"
+    (collapsedChange)="toggleSidebar($event)"
+    (activeSectionChange)="updateActiveSection($event)">
+  </app-sidebar>
+  
+  <!-- Main Content -->
+  <div class="main-content" [class.expanded]="sidebarCollapsed">
+    <div class="header">
+      <div class="page-title">
+        <h1>{{ pageTitle }}</h1>
+      </div>
+      <div class="header-actions">
+        <div class="search-bar">
+          <span class="material-icons">search</span>
+          <input type="text" placeholder="Search..." />
+        </div>
+        <div class="notification">
+          <span class="material-icons">notifications</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="content-container">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

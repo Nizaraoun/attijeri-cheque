@@ -1,0 +1,480 @@
+@import '../../app.component.scss';
+
+// Variables
+$primary-color: #3f51b5;
+$secondary-color: #f5f5f5;
+$border-color: #e0e0e0;
+$text-color: #333;
+$text-light: #666;
+$white: #fff;
+
+// Status colors
+$status-pending: #ff9800;
+$status-processing: #2196f3;
+$status-completed: #4caf50;
+$status-rejected: #f44336;
+
+// Shadows
+$card-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+$hover-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+
+// Border radius
+$border-radius: 8px;
+
+// Transitions
+$transition: all 0.3s ease;
+
+// Container
+.cheque-management-container {
+  max-width: 100%;
+  margin: 0;
+  font-family: 'Roboto', Arial, sans-serif;
+  color: $text-color;
+  height: 100vh;
+  overflow: hidden;
+}
+
+// Page layout - two column design
+.page-layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+// Sidebar styles
+.requests-sidebar {
+  width: 300px;
+  background-color: $white;
+  border-right: 1px solid $border-color;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  
+  .sidebar-header {
+    padding: 16px;
+    border-bottom: 1px solid $border-color;
+    
+    h2 {
+      margin: 0 0 8px 0;
+      font-size: 18px;
+      font-weight: 500;
+    }
+    
+    .filter-controls {
+      display: flex;
+      gap: 8px;
+    }
+  }
+  
+  .requests-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+    
+    .empty-state {
+      padding: 24px 16px;
+      text-align: center;
+      color: $text-light;
+    }
+    
+    .request-item {
+      padding: 12px;
+      border-radius: $border-radius;
+      margin-bottom: 8px;
+      background-color: $white;
+      border: 1px solid $border-color;
+      cursor: pointer;
+      transition: $transition;
+      
+      &:hover {
+        background-color: $secondary-color;
+        box-shadow: $card-shadow;
+      }
+      
+      &.selected {
+        border-left: 4px solid $primary-color;
+        background-color: rgba($primary-color, 0.05);
+      }
+      
+      &.completed {
+        border-left: 4px solid $status-completed;
+      }
+      
+      &.rejected {
+        border-left: 4px solid $status-rejected;
+      }
+      
+      .request-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        
+        .request-name {
+          font-weight: 500;
+        }
+        
+        .status-badge.small {
+          padding: 2px 6px;
+          font-size: 10px;
+        }
+      }
+      
+      .request-details {
+        font-size: 12px;
+        
+        .request-info {
+          display: flex;
+          margin-bottom: 4px;
+          
+          .request-label {
+            width: 60px;
+            color: $text-light;
+          }
+          
+          .request-value {
+            flex: 1;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Main content area
+.main-content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  background-color: $secondary-color;
+  
+  .empty-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: $text-light;
+    text-align: center;
+    
+    h2 {
+      margin-bottom: 16px;
+      font-size: 24px;
+    }
+  }
+}
+
+// Header
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  
+  h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 500;
+  }
+  
+  .request-id {
+    font-size: 14px;
+    color: $text-light;
+    background: $white;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-weight: 500;
+  }
+}
+
+// Card styles
+.card {
+  background: $white;
+  border-radius: $border-radius;
+  box-shadow: $card-shadow;
+  margin-bottom: 24px;
+  transition: $transition;
+  
+  &:hover {
+    box-shadow: $hover-shadow;
+  }
+  
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid $border-color;
+    
+    h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 500;
+    }
+  }
+  
+  .card-content {
+    padding: 24px;
+  }
+}
+
+// Main info card
+.main-info-card {
+  background: linear-gradient(to right, rgba(63, 81, 181, 0.05), rgba(63, 81, 181, 0.01));
+  border-left: 4px solid $primary-color;
+}
+
+// Cards container for two-column layout
+.cards-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Info styles
+.info-section {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.info-row {
+  display: grid;
+  grid-template-columns: 40% 60%;
+  align-items: center;
+  
+  .info-label {
+    font-weight: 500;
+    color: $text-light;
+  }
+  
+  .info-value {
+    font-weight: 400;
+    word-break: break-word;
+    
+    &.highlight {
+      font-weight: 500;
+      color: $primary-color;
+    }
+  }
+}
+
+// Status badge styles
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-pending {
+  background-color: rgba($status-pending, 0.1);
+  color: $status-pending;
+  border: 1px solid rgba($status-pending, 0.3);
+}
+
+.status-processing {
+  background-color: rgba($status-processing, 0.1);
+  color: $status-processing;
+  border: 1px solid rgba($status-processing, 0.3);
+}
+
+.status-completed {
+  background-color: rgba($status-completed, 0.1);
+  color: $status-completed;
+  border: 1px solid rgba($status-completed, 0.3);
+}
+
+.status-rejected {
+  background-color: rgba($status-rejected, 0.1);
+  color: $status-rejected;
+  border: 1px solid rgba($status-rejected, 0.3);
+}
+
+// Badge styles
+.badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.badge-success {
+  background-color: rgba($status-completed, 0.1);
+  color: $status-completed;
+}
+
+.badge-neutral {
+  background-color: rgba($text-light, 0.1);
+  color: $text-light;
+}
+
+// Status management section
+.status-management {
+  p {
+    margin-top: 0;
+    margin-bottom: 16px;
+  }
+  
+  .current-status {
+    font-weight: 500;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 14px;
+  }
+  
+  .status-buttons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    
+    button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: $border-radius;
+      background-color: $white;
+      color: $text-color;
+      font-weight: 500;
+      cursor: pointer;
+      transition: $transition;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      
+      &:hover:not([disabled]) {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      }
+      
+      &:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+      
+      &.selected {
+        box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
+      }
+      
+      &.btn-primary {
+        background-color: $status-completed;
+        color: $white;
+      }
+      
+      &.btn-danger {
+        background-color: $status-rejected;
+        color: $white;
+      }
+      
+      &.btn-warning {
+        background-color: $status-pending;
+        color: $white;
+      }
+      
+      &.btn-info {
+        background-color: $status-processing;
+        color: $white;
+      }
+    }
+  }
+}
+
+// Loading overlay
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba($primary-color, 0.2);
+    border-top-color: $primary-color;
+    border-radius: 50%;
+    animation: spin 1s infinite linear;
+  }
+}
+
+// Error message
+.error-message {
+  background-color: rgba($status-rejected, 0.1);
+  border: 1px solid rgba($status-rejected, 0.3);
+  color: $status-rejected;
+  padding: 16px;
+  margin: 24px;
+  border-radius: $border-radius;
+  text-align: center;
+  
+  button {
+    background-color: $status-rejected;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: $border-radius;
+    margin-top: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: $transition;
+    
+    &:hover {
+      background-color: darken($status-rejected, 10%);
+    }
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .page-layout {
+    flex-direction: column;
+    height: auto;
+  }
+  
+  .requests-sidebar {
+    width: 100%;
+    height: auto;
+    max-height: 300px;
+    border-right: none;
+    border-bottom: 1px solid $border-color;
+  }
+  
+  .main-content {
+    padding: 16px;
+  }
+  
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .info-row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+    
+    .info-label {
+      font-size: 14px;
+    }
+  }
+  
+  .status-buttons {
+    button {
+      flex: 1 0 calc(50% - 6px);
+      text-align: center;
+    }
+  }
+}

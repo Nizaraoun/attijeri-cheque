@@ -1,0 +1,198 @@
+// Modern Education Dashboard Styles
+
+// Variables
+$primary-color: #113263;
+$secondary-color: #3f37c9;
+$accent-color: #4cc9f0;
+$text-color: #333;
+$text-light: #6c757d;
+$border-color: #e0e0e0;
+$background-light: #f8f9fa;
+$background-white: #ffffff;
+$shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+$transition: all 0.3s ease;
+
+// Font sizes
+$font-xs: 0.75rem;
+$font-sm: 0.875rem;
+$font-md: 1rem;
+$font-lg: 1.25rem;
+$font-xl: 1.5rem;
+$font-xxl: 2rem;
+
+// Breakpoints
+$tablet: 768px;
+$desktop: 1024px;
+
+// Global styles
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 
+    Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  color: $text-color;
+  background-color: $background-light;
+  line-height: 1.6;
+}
+
+// App container
+.app-container {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+// Main content styles
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+  transition: $transition;
+  background-color: $background-light;
+  
+  &.expanded {
+    margin-left: -180px;
+  }
+  
+  .header {
+    padding: 1.5rem 2rem;
+    background: $background-white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    
+    .page-title {
+      h1 {
+        font-size: $font-xl;
+        font-weight: 600;
+        color: $primary-color;
+        margin: 0;
+      }
+    }
+    
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      
+      .search-bar {
+        display: flex;
+        align-items: center;
+        background: $background-light;
+        border-radius: 50px;
+        padding: 0.5rem 1rem;
+        min-width: 250px;
+        border: 1px solid $border-color;
+        transition: $transition;
+        
+        &:focus-within {
+          box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+          border-color: $primary-color;
+        }
+        
+        .material-icons {
+          color: $text-light;
+          margin-right: 0.5rem;
+        }
+        
+        input {
+          border: none;
+          background: none;
+          outline: none;
+          flex: 1;
+          color: $text-color;
+          font-size: $font-sm;
+          
+          &::placeholder {
+            color: $text-light;
+          }
+        }
+      }
+      
+      .notification {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: $background-light;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: $transition;
+        position: relative;
+        
+        &:hover {
+          background: darken($background-light, 5%);
+          transform: translateY(-2px);
+        }
+        
+        &::after {
+          content: '';
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          width: 8px;
+          height: 8px;
+          background: $accent-color;
+          border-radius: 50%;
+          border: 2px solid $background-white;
+        }
+        
+        .material-icons {
+          color: $primary-color;
+          font-size: 20px;
+        }
+      }
+    }
+  }
+  
+  .content-container {
+    padding: 2rem;
+    
+    // Dashboard content is now handled by each component
+  }
+}
+
+// Responsive styles
+@media (max-width: $tablet) {
+  .main-content {
+    margin-left: 0 !important;
+    
+    .header {
+      padding: 1rem;
+      
+      .header-actions {
+        .search-bar {
+          display: none;
+        }
+      }
+    }
+    
+    .content-container {
+      padding: 1rem;
+    }
+  }
+}
+
+// Material Icons
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+}

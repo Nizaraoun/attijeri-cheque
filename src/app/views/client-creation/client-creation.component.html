@@ -1,0 +1,330 @@
+<div class="client-creation-container">
+  <div class="page-header">
+    <h1>Création de Client</h1>
+    <p class="subtitle">Ajoutez un nouveau client dans la base de données</p>
+  </div>
+
+  <!-- Alert messages -->
+  <div *ngIf="successMessage" class="alert alert-success">
+    <span class="material-icons">check_circle</span>
+    <span>{{ successMessage }}</span>
+  </div>
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    <span class="material-icons">error</span>
+    <span>{{ errorMessage }}</span>
+  </div>
+
+  <!-- Client creation form -->
+  <div class="card">
+    <div class="card-header">
+      <h2>Formulaire d'Ajout de Client</h2>
+      <p>Remplissez les informations personnelles et bancaires du client</p>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="clientForm" (ngSubmit)="submitForm()">
+        <!-- Personal Information Section -->
+        <div class="form-section">
+          <h3>Informations Personnelles</h3>
+          
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label for="nom">Nom <span class="required">*</span></label>
+                <input 
+                  type="text" 
+                  id="nom" 
+                  formControlName="Nom" 
+                  class="form-control"
+                  [ngClass]="{'is-invalid': hasSubmitted && f['Nom'].errors}"
+                >
+                <div *ngIf="hasSubmitted && f['Nom'].errors" class="invalid-feedback">
+                  <div *ngIf="f['Nom'].errors['required']">Le nom est requis</div>
+                  <div *ngIf="f['Nom'].errors['minlength']">Le nom doit contenir au moins 2 caractères</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col">
+              <div class="form-group">
+                <label for="prenom">Prénom <span class="required">*</span></label>
+                <input 
+                  type="text" 
+                  id="prenom" 
+                  formControlName="Prénom" 
+                  class="form-control"
+                  [ngClass]="{'is-invalid': hasSubmitted && f['Prénom'].errors}"
+                >
+                <div *ngIf="hasSubmitted && f['Prénom'].errors" class="invalid-feedback">
+                  <div *ngIf="f['Prénom'].errors['required']">Le prénom est requis</div>
+                  <div *ngIf="f['Prénom'].errors['minlength']">Le prénom doit contenir au moins 2 caractères</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label for="date_naissance">Date de Naissance <span class="required">*</span></label>
+                <input 
+                  type="date" 
+                  id="date_naissance" 
+                  formControlName="Date_naissance" 
+                  class="form-control"
+                  [ngClass]="{'is-invalid': hasSubmitted && f['Date_naissance'].errors}"
+                >
+                <div *ngIf="hasSubmitted && f['Date_naissance'].errors" class="invalid-feedback">
+                  <div *ngIf="f['Date_naissance'].errors['required']">La date de naissance est requise</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col">
+              <div class="form-group">
+                <label for="sexe">Sexe <span class="required">*</span></label>
+                <select 
+                  id="sexe" 
+                  formControlName="Sexe" 
+                  class="form-control"
+                  [ngClass]="{'is-invalid': hasSubmitted && f['Sexe'].errors}"
+                >
+                  <option *ngFor="let option of genderOptions" [value]="option">{{ option }}</option>
+                </select>
+                <div *ngIf="hasSubmitted && f['Sexe'].errors" class="invalid-feedback">
+                  <div *ngIf="f['Sexe'].errors['required']">Le sexe est requis</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label for="nationalite">Nationalité <span class="required">*</span></label>
+                <input 
+                  type="text" 
+                  id="nationalite" 
+                  formControlName="Nationnalité" 
+                  class="form-control"
+                  [ngClass]="{'is-invalid': hasSubmitted && f['Nationnalité'].errors}"
+                >
+                <div *ngIf="hasSubmitted && f['Nationnalité'].errors" class="invalid-feedback">
+                  <div *ngIf="f['Nationnalité'].errors['required']">La nationalité est requise</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col">
+              <div class="form-group">
+                <label for="num_identite">Numéro d'Identité <span class="required">*</span></label>
+                <input 
+                  type="text" 
+                  id="num_identite" 
+                  formControlName="num_identité" 
+                  class="form-control"
+                  [ngClass]="{'is-invalid': hasSubmitted && f['num_identité'].errors}"
+                  placeholder="CIN / Passeport / Carte de séjour"
+                >
+                <div *ngIf="hasSubmitted && f['num_identité'].errors" class="invalid-feedback">
+                  <div *ngIf="f['num_identité'].errors['required']">Le numéro d'identité est requis</div>
+                  <div *ngIf="f['num_identité'].errors['minlength']">Le numéro d'identité doit contenir au moins 8 caractères</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label for="telephone">Téléphone <span class="required">*</span></label>
+                <input 
+                  type="tel" 
+                  id="telephone" 
+                  formControlName="Télephone" 
+                  class="form-control"
+                  [ngClass]="{'is-invalid': hasSubmitted && f['Télephone'].errors}"
+                  placeholder="8 chiffres"
+                >
+                <div *ngIf="hasSubmitted && f['Télephone'].errors" class="invalid-feedback">
+                  <div *ngIf="f['Télephone'].errors['required']">Le numéro de téléphone est requis</div>
+                  <div *ngIf="f['Télephone'].errors['pattern']">Le numéro de téléphone doit contenir 8 chiffres</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col">
+              <div class="form-group">
+                <label for="email">Email <span class="required">*</span></label>
+                <input 
+                  type="email" 
+                  id="email" 
+                  formControlName="email" 
+                  class="form-control"
+                  [ngClass]="{'is-invalid': hasSubmitted && f['email'].errors}"
+                  placeholder="exemple@email.com"
+                >
+                <div *ngIf="hasSubmitted && f['email'].errors" class="invalid-feedback">
+                  <div *ngIf="f['email'].errors['required']">L'email est requis</div>
+                  <div *ngIf="f['email'].errors['email']">Veuillez entrer une adresse email valide</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Banking Information Section -->
+        <div class="form-section">
+          <h3>Informations Bancaires</h3>
+          
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label for="type_client">Type de Client <span class="required">*</span></label>
+                <select 
+                  id="type_client" 
+                  formControlName="Type_Client" 
+                  class="form-control"
+                  [ngClass]="{'is-invalid': hasSubmitted && f['Type_Client'].errors}"
+                >
+                  <option *ngFor="let option of clientTypeOptions" [value]="option">{{ option }}</option>
+                </select>
+                <div *ngIf="hasSubmitted && f['Type_Client'].errors" class="invalid-feedback">
+                  <div *ngIf="f['Type_Client'].errors['required']">Le type de client est requis</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col">
+              <div class="form-group">
+                <label for="type_compte">Type de Compte <span class="required">*</span></label>
+                <select 
+                  id="type_compte" 
+                  formControlName="type_compte" 
+                  class="form-control"
+                  [ngClass]="{'is-invalid': hasSubmitted && f['type_compte'].errors}"
+                >
+                  <option *ngFor="let option of accountTypeOptions" [value]="option">{{ option }}</option>
+                </select>
+                <div *ngIf="hasSubmitted && f['type_compte'].errors" class="invalid-feedback">
+                  <div *ngIf="f['type_compte'].errors['required']">Le type de compte est requis</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label for="salaire">Salaire <span class="required">*</span></label>
+                <input 
+                  type="number" 
+                  id="salaire" 
+                  formControlName="salaire" 
+                  class="form-control"
+                  [ngClass]="{'is-invalid': hasSubmitted && f['salaire'].errors}"
+                  min="0"
+                  step="0.001"
+                >
+                <div *ngIf="hasSubmitted && f['salaire'].errors" class="invalid-feedback">
+                  <div *ngIf="f['salaire'].errors['required']">Le salaire est requis</div>
+                  <div *ngIf="f['salaire'].errors['min']">Le salaire doit être positif</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col">
+              <div class="form-group">
+                <label for="solde">Solde Initial <span class="required">*</span></label>
+                <input 
+                  type="text" 
+                  id="solde" 
+                  formControlName="solde" 
+                  class="form-control"
+                  [ngClass]="{'is-invalid': hasSubmitted && f['solde'].errors}"
+                  (blur)="formatSolde()"
+                >
+                <div *ngIf="hasSubmitted && f['solde'].errors" class="invalid-feedback">
+                  <div *ngIf="f['solde'].errors['required']">Le solde initial est requis</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Automatically Generated Fields -->
+        <div class="form-section generated-fields" *ngIf="clientForm.get('ID_Client')?.value">
+          <h3>Identifiants Générés</h3>
+          
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label for="id_client">ID Client</label>
+                <input 
+                  type="text" 
+                  id="id_client" 
+                  formControlName="ID_Client" 
+                  class="form-control"
+                  readonly
+                >
+              </div>
+            </div>
+            
+            <div class="col">
+              <div class="form-group">
+                <label for="id_compte">ID Compte</label>
+                <input 
+                  type="text" 
+                  id="id_compte" 
+                  formControlName="ID_Compte" 
+                  class="form-control"
+                  readonly
+                >
+              </div>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label for="rib">RIB</label>
+                <input 
+                  type="text" 
+                  id="rib" 
+                  formControlName="RIB" 
+                  class="form-control"
+                  readonly
+                >
+              </div>
+            </div>
+            
+            <div class="col">
+              <div class="form-group">
+                <label for="stat_compte">Statut Compte</label>
+                <input 
+                  type="text" 
+                  id="stat_compte" 
+                  formControlName="stat_compte" 
+                  class="form-control"
+                  readonly
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="resetForm()">
+            <span class="material-icons">refresh</span>
+            Réinitialiser
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <span class="material-icons" *ngIf="!isLoading">person_add</span>
+            Créer Client
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

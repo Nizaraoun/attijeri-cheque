@@ -1,0 +1,134 @@
+<div class="dashboard-container">
+  <header class="dashboard-header">
+    <h1>Tableau de Bord</h1>
+    <div class="current-date">{{currentDate | date:'EEEE d MMMM y'}}</div>
+  </header>
+
+  <div class="stats-container">
+    <div class="stat-card">
+      <div class="stat-icon">
+        <span class="material-icons">account_balance</span>
+      </div>
+      <div class="stat-details">
+        <h3>Total des Comptes</h3>
+        <p class="stat-value">{{stats.totalAccounts}}</p>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon">
+        <span class="material-icons">person_add</span>
+      </div>
+      <div class="stat-details">
+        <h3>Demandes de Compte</h3>
+        <p class="stat-value">{{stats.pendingAccountRequests}}</p>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon">
+        <span class="material-icons">chrome_reader_mode</span>
+      </div>
+      <div class="stat-details">
+        <h3>Demandes de Chèques</h3>
+        <p class="stat-value">{{stats.pendingCheckRequests}}</p>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon">
+        <span class="material-icons">sync_alt</span>
+      </div>
+      <div class="stat-details">
+        <h3>Derogations</h3>
+        <p class="stat-value">{{stats.totalTransactions}}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-grid">
+    <!-- Recent Account Requests from Firebase collection 'accountRequests' -->
+    <div class="dashboard-card">
+      <div class="card-header">
+        <h2>Demandes de Compte Récentes</h2>
+        <a [routerLink]="['/account-requests']" class="view-all">Voir Tout</a>
+      </div>
+      <div class="card-content">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Client</th>
+              <th>Type de Compte</th>
+              <th>Date</th>
+              <th>Statut</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let request of recentAccountRequests">
+              <td>{{request.name}}</td>
+              <td>{{request.type}}</td>
+              <td>{{request.date | date:'d MMM y'}}</td>
+              <td>
+                <span class="status-badge" [ngClass]="getStatusClass(request.status)">
+                  {{request.status}}
+                </span>
+              </td>
+            </tr>
+            <tr *ngIf="recentAccountRequests.length === 0">
+              <td colspan="5" class="text-center">Aucune demande de compte trouvée</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Recent Check Requests from Firebase collection 'checkRequests' -->
+    <div class="dashboard-card">
+      <div class="card-header">
+        <h2>Demandes de Chèques Récentes</h2>
+        <a [routerLink]="['/check-requests']" class="view-all">Voir Tout</a>
+      </div>
+      <div class="card-content">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Compte</th>
+              <th>Date</th>
+              <th>Statut</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let request of recentCheckRequests">
+              <td>{{request.id}}</td>
+              <td>{{request.date | date:'d MMM y'}}</td>
+              <td>
+                <span class="status-badge" [ngClass]="getStatusClass(request.status)">
+                  {{request.status}}
+                </span>
+              </td>
+            </tr>
+            <tr *ngIf="recentCheckRequests.length === 0">
+              <td colspan="5" class="text-center">Aucune demande de chèque trouvée</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+   
+    <!-- Activity Graph -->
+    <!-- <div class="dashboard-card">
+      <div class="card-header">
+        <h2>Activité Mensuelle</h2>
+      </div>
+      <div class="card-content">
+        <div class="chart-placeholder">
+          <div class="chart-info">
+            <p>Le graphique d'activité bancaire serait affiché ici.</p>
+            <p>Intégration avec Chart.js ou une bibliothèque similaire requise.</p>
+          </div>
+        </div>
+      </div>
+    </div> -->
+  </div>
+</div>

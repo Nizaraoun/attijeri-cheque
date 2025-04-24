@@ -1,0 +1,181 @@
+<div class="account-requests-container">
+  <header class="page-header">
+    <h1>Demandes de Création de Compte</h1>
+    <div class="header-actions">
+      <div class="search-container">
+        <span class="material-icons">search</span>
+        <input 
+          type="text" 
+          [(ngModel)]="searchQuery" 
+          placeholder="Rechercher par nom, email, RIB..." 
+          class="search-input">
+      </div>
+      <div class="filter-container">
+        <label for="status-filter">Filtrer par:</label>
+        <select id="status-filter" [(ngModel)]="filterStatus" class="status-filter">
+          <option value="all">Tous les statuts</option>
+          <option value="en attente">En attente</option>
+          <option value="en cours">En cours</option>
+          <option value="approuvé">Approuvé</option>
+          <option value="refusé">Refusé</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <!-- Loading state -->
+  <div class="loading-container" *ngIf="isLoading">
+    <div class="loading-spinner"></div>
+    <p>Chargement des demandes de compte...</p>
+  </div>
+
+  <!-- Error message -->
+  <div class="alert alert-danger" *ngIf="errorMessage && !isLoading">
+    <span class="material-icons">error</span>
+    <span>{{ errorMessage }}</span>
+  </div>
+
+  <!-- Empty state -->
+  <div class="empty-state" *ngIf="!isLoading && filteredRequests.length === 0 && !errorMessage">
+    <div class="empty-icon">
+      <span class="material-icons">person_add</span>
+    </div>
+    <h2>Aucune demande trouvée</h2>
+    <p>Il n'y a aucune demande de création de compte correspondant à vos filtres actuels.</p>
+  </div>
+
+  <!-- Account requests table -->
+  <div class="table-container" *ngIf="!isLoading && filteredRequests.length > 0">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Nom Complet</th>
+          <th>Email</th>
+          <th>Téléphone</th>
+          <th>RIB</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let request of filteredRequests">
+          <td>{{ getFullName(request) }}</td>
+          <td>{{ request.email }}</td>
+          <td>{{ request.telephone }}</td>
+          <td>{{ request.rib }}</td>
+          <td>
+            <span class="status-badge" [ngClass]="getStatusClass(request.statutDemande)">
+              {{ request.statutDemande }}
+            </span>
+          </td>
+          <td>
+            <button class="action-btn" (click)="viewRequestDetails(request)" title="Voir les détails">
+              <span class="material-icons">visibility</span>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Request details modal -->
+  <div class="modal-overlay" *ngIf="selectedRequest" (click)="closeDetails()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Détails de la Demande</h2>
+        <button class="close-btn" (click)="closeDetails()">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <!-- Success message -->
+        <div class="alert alert-success" *ngIf="successMessage">
+          <span class="material-icons">check_circle</span>
+          <span>{{ successMessage }}</span>
+        </div>
+        
+        <!-- Error message -->
+        <div class="alert alert-danger" *ngIf="errorMessage">
+          <span class="material-icons">error</span>
+          <span>{{ errorMessage }}</span>
+        </div>
+        
+        <!-- Password display -->
+        <div class="password-container" *ngIf="password">
+          <h3>Mot de passe temporaire</h3>
+          <div class="password-display">
+            <span>{{ password }}</span>
+            <button class="copy-btn" title="Copier" (click)="copyToClipboard(password)">
+              <span class="material-icons">content_copy</span>
+            </button>
+          </div>
+          <p class="password-note">Ce mot de passe a été généré automatiquement. Veuillez le communiquer au client de manière sécurisée.</p>
+        </div>
+        
+        <div class="request-detail-grid">
+          <div class="detail-group">
+            <h3>Informations Personnelles</h3>
+            <div class="detail-row">
+              <span class="detail-label">Nom:</span>
+              <span class="detail-value">{{ selectedRequest.nom }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Prénom:</span>
+              <span class="detail-value">{{ selectedRequest.prenom }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Email:</span>
+              <span class="detail-value">{{ selectedRequest.email }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Téléphone:</span>
+              <span class="detail-value">{{ selectedRequest.telephone }}</span>
+            </div>
+          </div>
+
+          <div class="detail-group">
+            <h3>Informations Bancaires</h3>
+            <div class="detail-row">
+              <span class="detail-label">RIB:</span>
+              <span class="detail-value">{{ selectedRequest.rib }}</span>
+            </div>
+            
+            <div class="detail-row">
+              <span class="detail-label">Statut:</span>
+              <span class="detail-value status-badge" [ngClass]="getStatusClass(selectedRequest.statutDemande)">
+                {{ selectedRequest.statutDemande }}
+              </span>
+            </div>
+            <div class="detail-row" *ngIf="selectedRequest.motifRefus">
+              <span class="detail-label">Motif de Refus:</span>
+              <span class="detail-value">{{ selectedRequest.motifRefus }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <!-- Actions for pending requests -->
+        <div class="status-actions" *ngIf="selectedRequest.statutDemande === 'En attente' && !processingRequest">
+          <button class="btn btn-secondary" (click)="processRequest(selectedRequest, false, 'Documents incomplets')">
+            <span class="material-icons">close</span>
+            Refuser
+          </button>
+          <button class="btn btn-success" (click)="processRequest(selectedRequest, true)">
+            <span class="material-icons">check</span>
+            Approuver
+          </button>
+        </div>
+        
+        <!-- Loading indicator -->
+        <div class="processing-indicator" *ngIf="processingRequest">
+          <div class="spinner"></div>
+          <span>Traitement en cours...</span>
+        </div>
+        
+        <button class="btn btn-primary" (click)="closeDetails()">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>

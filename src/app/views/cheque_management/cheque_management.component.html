@@ -1,0 +1,199 @@
+<div class="cheque-management-container">
+  <div class="loading-overlay" *ngIf="isLoading">
+    <div class="spinner"></div>
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    <p>{{ error }}</p>
+    <button (click)="fetchAllChequeRequests()">Retry</button>
+  </div>
+
+  <div class="page-layout">
+    <!-- Sidebar with list of all cheque requests -->
+    <div class="requests-sidebar">
+      <div class="sidebar-header">
+        <h2>Demandes de Chèques</h2>
+        <div class="filter-controls">
+          <!-- Add filter controls here if needed -->
+        </div>
+      </div>
+      
+      <div class="requests-list">
+        <div *ngIf="allChequeRequests.length === 0 && !isLoading" class="empty-state">
+          <p>Aucune demande de chèque trouvée</p>
+        </div>
+        
+        <div *ngFor="let request of allChequeRequests" 
+             class="request-item" 
+             [class.selected]="selectedId === request.id"
+             [class.completed]="request.status === 'completed'"
+             [class.rejected]="request.status === 'rejected'"
+             (click)="selectChequeRequest(request.id || '')">
+          <div class="request-header">
+            <span class="request-name">{{ request.prenom }} {{ request.nom }}</span>
+            <span class="status-badge small" [ngClass]="getStatusClass(request.status)">
+              {{ request.status }}
+            </span>
+          </div>
+          <div class="request-details">
+            <div class="request-info">
+              <span class="request-label">RIB:</span>
+              <span class="request-value">{{ request.rib }}</span>
+            </div>
+            <div class="request-info">
+              <span class="request-label">Date:</span>
+              <span class="request-value">{{ formatFirestoreDate(request.requestDate) | date:'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="request-info">
+              <span class="request-label">Chèques:</span>
+              <span class="request-value">{{ request.nombreCheques }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Main content showing the selected cheque request details -->
+    <div class="main-content">
+      <ng-container *ngIf="!selectedChequeRequest && !isLoading">
+        <div class="empty-details">
+          <h2>Sélectionnez une demande de chèque</h2>
+          <p>Veuillez sélectionner une demande dans la liste pour afficher les détails.</p>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="selectedChequeRequest">
+        <div class="header">
+          <h1>Détails de Demande de Chèque</h1>
+          <div class="request-id">ID: {{ selectedChequeRequest.id }}</div>
+        </div>
+
+        <div class="card main-info-card">
+          <div class="card-header">
+            <h2>Information Principale</h2>
+            <div class="status-badge" [ngClass]="getStatusClass(selectedChequeRequest.status)">
+              {{ selectedChequeRequest.status }}
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="info-section">
+              <div class="info-row">
+                <div class="info-label">Nom Complet</div>
+                <div class="info-value">{{ selectedChequeRequest.prenom }} {{ selectedChequeRequest.nom }}</div>
+              </div>
+              <div class="info-row">
+                <div class="info-label">CIN</div>
+                <div class="info-value">{{ selectedChequeRequest.cin }}</div>
+              </div>
+              <div class="info-row">
+                <div class="info-label">Email</div>
+                <div class="info-value">{{ selectedChequeRequest.email }}</div>
+              </div>
+              <div class="info-row">
+                <div class="info-label">Téléphone</div>
+                <div class="info-value">{{ selectedChequeRequest.telephone }}</div>
+              </div>
+              <div class="info-row">
+                <div class="info-label">RIB</div>
+                <div class="info-value highlight">{{ selectedChequeRequest.rib }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cards-container">
+          <div class="card">
+            <div class="card-header">
+              <h2>Détails du Chèque</h2>
+            </div>
+            <div class="card-content">
+              <div class="info-section">
+                <div class="info-row">
+                  <div class="info-label">Type de Chèque</div>
+                  <div class="info-value">{{ selectedChequeRequest.typeCheque }}</div>
+                </div>
+                <div class="info-row">
+                  <div class="info-label">Nombre de Chèques</div>
+                  <div class="info-value">{{ selectedChequeRequest.nombreCheques }}</div>
+                </div>
+                <div class="info-row">
+                  <div class="info-label">Limite par Chèque</div>
+                  <div class="info-value">{{ selectedChequeRequest.limitPerSheet }} TND</div>
+                </div>
+                <div class="info-row">
+                  <div class="info-label">Limite Totale</div>
+                  <div class="info-value highlight">{{ selectedChequeRequest.totalLimit }} TND</div>
+                </div>
+                <div class="info-row">
+                  <div class="info-label">Période de Validité</div>
+                  <div class="info-value">{{ selectedChequeRequest.validityPeriod }} mois</div>
+                </div>
+                <div class="info-row">
+                  <div class="info-label">CMC Net</div>
+                  <div class="info-value">{{ selectedChequeRequest.cmcNet }} TND</div>
+                </div>
+                <div class="info-row">
+                  <div class="info-label">Expédié</div>
+                  <div class="info-value">
+                    <span class="badge" [ngClass]="{'badge-success': selectedChequeRequest.isExpedited, 'badge-neutral': !selectedChequeRequest.isExpedited}">
+                      {{ selectedChequeRequest.isExpedited ? 'Oui' : 'Non' }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h2>Détails de Livraison</h2>
+            </div>
+            <div class="card-content">
+              <div class="info-section">
+                <div class="info-row">
+                  <div class="info-label">Mode de Livraison</div>
+                  <div class="info-value">{{ selectedChequeRequest.modeLivraison }}</div>
+                </div>
+                <div class="info-row">
+                  <div class="info-label">Agence de Retrait</div>
+                  <div class="info-value">{{ selectedChequeRequest.agenceRetrait }}</div>
+                </div>
+                <div class="info-row" *ngIf="selectedChequeRequest.adresseComplete">
+                  <div class="info-label">Adresse Complete</div>
+                  <div class="info-value">{{ selectedChequeRequest.adresseComplete }}</div>
+                </div>
+                <div class="info-row">
+                  <div class="info-label">Date de Demande</div>
+                  <div class="info-value">{{ formatDate(selectedChequeRequest.requestDate) }}</div>
+                </div>
+                <div class="info-row">
+                  <div class="info-label">Date de Récupération</div>
+                  <div class="info-value">{{ formatDate(selectedChequeRequest.retrievalDate) }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="actions-container card">
+          <div class="card-header">
+            <h2>Gestion de Statut</h2>
+          </div>
+          <div class="card-content">
+            <div class="status-management">
+              <p>Statut actuel: <span class="current-status" [ngClass]="getStatusClass(selectedChequeRequest.status)">{{ selectedChequeRequest.status }}</span></p>
+              <div class="status-buttons">
+                <button *ngFor="let status of statusOptions" 
+                        [ngClass]="{'selected': selectedChequeRequest.status === status, 'btn-primary': status === 'completed', 'btn-danger': status === 'rejected', 'btn-warning': status === 'pending', 'btn-info': status === 'processing'}"
+                        [disabled]="selectedChequeRequest.status === status"
+                        (click)="updateStatus(status)">
+                  {{ status }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,74 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="logo">
+        <h1>Attijari STAF</h1>
+      </div>
+      <h2>Bienvenue</h2>
+      <p>Connectez-vous pour accéder à votre tableau de bord</p>
+    </div>
+
+    <div class="auth-form">
+      <form (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="email">Adresse Email</label>
+          <div class="input-with-icon">
+            <span class="material-icons">email</span>
+            <input 
+              type="email" 
+              id="email" 
+              name="email"
+              [(ngModel)]="loginForm.email" 
+              placeholder="votre@email.com" 
+              required
+            >
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <div class="label-with-link">
+            <label for="password">Mot de passe</label>
+          </div>
+          <div class="input-with-icon">
+            <span class="material-icons">lock</span>
+            <input 
+              type="password" 
+              id="password" 
+              name="password"
+              [(ngModel)]="loginForm.password" 
+              placeholder="Entrez votre mot de passe" 
+              required
+            >
+          </div>
+        </div>
+        
+        <div class="form-check">
+          <label class="checkbox-container">
+            <input 
+              type="checkbox" 
+              id="rememberMe" 
+              name="rememberMe"
+              [(ngModel)]="loginForm.rememberMe"
+            >
+            <span class="checkmark"></span>
+            Se souvenir de moi
+          </label>
+        </div>
+        
+        <div class="error-message" *ngIf="errorMessage">
+          <span class="material-icons">error_outline</span>
+          {{ errorMessage }}
+        </div>
+        
+        <button type="submit" class="primary-btn" [disabled]="isLoading">
+          <span *ngIf="isLoading" class="loading-spinner"></span>
+          <span *ngIf="!isLoading">Se connecter</span>
+        </button>
+      </form>
+      
+     
+    </div>
+    
+   
+  </div>
+</div>

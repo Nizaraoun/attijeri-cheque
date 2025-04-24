@@ -1,0 +1,382 @@
+// Variables
+$primary-color: #4361ee;
+$secondary-color: #3f37c9;
+$accent-color: #4cc9f0;
+$text-color: #333;
+$text-light: #6c757d;
+$error-color: #f44336;
+$success-color: #4caf50;
+$border-color: #e0e0e0;
+$background-light: #f8f9fa;
+$background-white: #ffffff;
+$shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+$transition: all 0.3s ease;
+
+// Auth Container
+.auth-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(76, 201, 240, 0.1));
+  
+  // Decorative elements
+  &::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54.627 0l.83.828-1.415 1.415L51.8 0h2.827zM5.373 0l-.83.828L5.96 2.243 8.2 0H5.374zM48.97 0l3.657 3.657-1.414 1.414L46.143 0h2.828zM11.03 0L7.372 3.657 8.787 5.07 13.857 0H11.03zm32.284 0L49.8 6.485 48.384 7.9l-7.9-7.9h2.83zm-24.568 0L12.258 6.485l1.415 1.414 7.9-7.9h-2.83zM43.314 0l-9.9 9.9 1.414 1.414L46.143 0h-2.83zM16.686 0l9.9 9.9-1.415 1.414L13.858 0h2.828zM25 0l13.728 13.728-1.414 1.414L22.172 0H25zm-3.172 0l17.828 17.828-1.414 1.414L16.686 0h5.142zm9.9 0L38 6.485 36.586 7.9l-7.9-7.9h2.828zM0 8.2L7.9 0H5.07L0 5.07V8.2zm0-2.83L3.657 0H0v5.37zm0 18.958L26.128 0h-2.83L0 23.257v1.07z' fill='%234361ee' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+    pointer-events: none;
+    opacity: 0.8;
+  }
+}
+
+// Auth Card
+.auth-card {
+    width: 80% !important;
+    max-width: 484px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+    padding: 8%;
+}
+
+// Auth Header
+.auth-header {
+  padding: 2.5rem 2.5rem 1.5rem;
+  text-align: center;
+  
+  .logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    
+    .logo-icon {
+      color: $primary-color;
+      font-size: 32px;
+      margin-right: 0.75rem;
+    }
+    
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: $primary-color;
+      margin: 0;
+    }
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: $text-color;
+    margin: 0 0 0.5rem;
+  }
+  
+  p {
+    color: $text-light;
+    margin: 0;
+    font-size: 0.95rem;
+  }
+}
+
+// Auth Form
+.auth-form {
+  padding: 1.5rem 2.5rem;
+  
+  form {
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1.5rem;
+    
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: $text-color;
+      font-size: 0.95rem;
+    }
+    
+    .label-with-link {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      
+      .forgot-link {
+        font-size: 0.8rem;
+        color: $primary-color;
+        text-decoration: none;
+        transition: $transition;
+        
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+    
+    .input-with-icon {
+      position: relative;
+      
+      .material-icons {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: $text-light;
+        font-size: 20px;
+      }
+      
+      input {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 46px;
+        border: 1px solid $border-color;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: $transition;
+        color: $text-color;
+        
+        &:focus {
+          outline: none;
+          border-color: $primary-color;
+          box-shadow: 0 0 0 2px rgba($primary-color, 0.1);
+        }
+        
+        &::placeholder {
+          color: lighten($text-light, 15%);
+        }
+      }
+    }
+  }
+  
+  .form-check {
+    margin-bottom: 1.25rem;
+    
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      position: relative;
+      padding-left: 30px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      color: $text-color;
+      user-select: none;
+      
+      input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+        
+        &:checked ~ .checkmark {
+          background-color: $primary-color;
+          border-color: $primary-color;
+          
+          &:after {
+            display: block;
+          }
+        }
+      }
+      
+      .checkmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 18px;
+        width: 18px;
+        background-color: $background-white;
+        border: 1px solid $border-color;
+        border-radius: 4px;
+        transition: $transition;
+        
+        &:after {
+          content: "";
+          position: absolute;
+          display: none;
+          left: 6px;
+          top: 2px;
+          width: 4px;
+          height: 10px;
+          border: solid white;
+          border-width: 0 2px 2px 0;
+          transform: rotate(45deg);
+        }
+      }
+      
+      &:hover .checkmark {
+        border-color: $primary-color;
+      }
+    }
+  }
+  
+  .error-message {
+    display: flex;
+    align-items: center;
+    color: $error-color;
+    font-size: 0.85rem;
+    margin-bottom: 1.25rem;
+    background: rgba($error-color, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    
+    .material-icons {
+      font-size: 18px;
+      margin-right: 8px;
+    }
+  }
+  
+  .primary-btn {
+    width: 100%;
+    padding: 0.875rem;
+    background: linear-gradient(135deg, $primary-color, $secondary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: $transition;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba($primary-color, 0.4);
+    }
+    
+    &:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .loading-spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(white, 0.5);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 0.8s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  }
+  
+  .auth-separator {
+    position: relative;
+    text-align: center;
+    margin: 1.5rem 0;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 100%;
+      height: 1px;
+      background-color: $border-color;
+    }
+    
+    span {
+      position: relative;
+      display: inline-block;
+      padding: 0 1rem;
+      background-color: white;
+      color: $text-light;
+      font-size: 0.85rem;
+    }
+  }
+  
+  .social-auth {
+    display: flex;
+    gap: 1rem;
+    
+    .social-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem;
+      border: 1px solid $border-color;
+      border-radius: 8px;
+      background: $background-white;
+      color: $text-color;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: $transition;
+      
+      svg {
+        margin-right: 8px;
+      }
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      
+      &.google:hover {
+        border-color: #ea4335;
+      }
+      
+      &.facebook:hover {
+        border-color: #1877f2;
+      }
+    }
+  }
+}
+
+// Auth Footer
+.auth-footer {
+  text-align: center;
+  padding: 1.5rem;
+  border-top: 1px solid $border-color;
+  background-color: rgba($background-light, 0.5);
+  
+  p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: $text-light;
+    
+    a {
+      color: $primary-color;
+      font-weight: 500;
+      text-decoration: none;
+      transition: $transition;
+      
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+// Responsive styles
+@media (max-width: 576px) {
+  .auth-header {
+    padding: 2rem 1.5rem 1rem;
+  }
+  
+  .auth-form {
+    padding: 1rem 1.5rem;
+  }
+  
+  .social-auth {
+    flex-direction: column;
+  }
+}

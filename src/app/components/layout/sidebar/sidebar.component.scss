@@ -1,0 +1,289 @@
+// Modern Banking Dashboard Sidebar Styles
+
+// Variables
+$primary-color: #1e3a8a; // Deep blue for banking
+$secondary-color: #0f2557; // Darker blue
+$accent-color: #64748b; // Slate blue accent
+$hover-color: rgba(30, 58, 138, 0.1);
+$active-color: rgba(100, 116, 139, 0.15);
+$text-color: #fff;
+$text-muted: rgba(255, 255, 255, 0.7);
+$transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+$shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+$border-radius: 12px;
+
+// Sidebar Layout
+.sidebar {
+  width: 260px;
+  height: 100%;
+  background: linear-gradient(135deg, $primary-color, $secondary-color);
+  color: $text-color;
+  display: flex;
+  flex-direction: column;
+  transition: $transition;
+  box-shadow: $shadow;
+  z-index: 10;
+  position: relative;
+  overflow: hidden;
+  
+  &.collapsed {
+    width: 80px;
+  }
+  
+  // Sidebar Header
+  .sidebar-header {
+    padding: 1.5rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      
+      .logo-icon {
+        font-size: 24px;
+        color: #cbd5e1; // Light slate for the icon
+      }
+      
+      .logo-text {
+        font-size: 1.25rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        transition: $transition;
+        
+        &.hidden {
+          opacity: 0;
+          width: 0;
+          display: none;
+        }
+      }
+    }
+    
+    .toggle-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      transition: $transition;
+      
+      &:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: scale(1.05);
+      }
+      
+      .material-icons {
+        font-size: 20px;
+      }
+    }
+  }
+  
+  // Sidebar Menu
+  .sidebar-menu {
+    flex: 1;
+    padding: 1.5rem 0.75rem;
+    overflow-y: auto;
+    
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+    }
+    
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      
+      li {
+        border-radius: $border-radius;
+        transition: $transition;
+        
+        &.active {
+          background: $active-color;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          
+          a {
+            font-weight: 600;
+            
+            .menu-icon {
+              color: #cbd5e1; // Light slate for active icon
+            }
+          }
+        }
+        
+        &:hover:not(.active) {
+          background: $hover-color;
+          transform: translateX(4px);
+        }
+        
+        a {
+          color: $text-color;
+          text-decoration: none;
+          display: flex;
+          align-items: center;
+          padding: 0.75rem 1rem;
+          border-radius: $border-radius;
+          gap: 1rem;
+          
+          .menu-icon {
+            font-size: 20px;
+            transition: $transition;
+          }
+          
+          .menu-text {
+            transition: $transition;
+            white-space: nowrap;
+            
+            &.hidden {
+              opacity: 0;
+              width: 0;
+              display: none;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  // Sidebar Footer
+  .sidebar-footer {
+    padding: 1.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+      position: relative;
+      
+      &.collapsed {
+        justify-content: center;
+        flex-direction: column;
+        
+        .user-avatar {
+          margin-bottom: 0.5rem;
+        }
+        
+        .logout-btn {
+          margin-top: 0.5rem;
+        }
+      }
+      
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: $transition;
+        
+        &:hover {
+          transform: scale(1.05);
+          background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .material-icons {
+          font-size: 24px;
+          color: #cbd5e1; // Light slate for the avatar icon
+        }
+      }
+      
+      .user-details {
+        transition: $transition;
+        flex: 1;
+        
+        &.hidden {
+          opacity: 0;
+          width: 0;
+          display: none;
+        }
+        
+        .user-name {
+          font-weight: 600;
+          font-size: 0.9rem;
+          margin: 0;
+        }
+        
+        .user-role {
+          font-size: 0.75rem;
+          color: $text-muted;
+          margin: 0;
+        }
+      }
+      
+      .logout-btn {
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        color: white;
+        border-radius: 6px;
+        padding: 0.5rem 0.75rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: $transition;
+        
+        &:hover {
+          background: rgba(255, 0, 0, 0.2);
+          transform: translateY(-2px);
+        }
+        
+        &.icon-only {
+          padding: 0.5rem;
+          
+          .btn-text {
+            display: none;
+          }
+        }
+        
+        .material-icons {
+          font-size: 18px;
+        }
+      }
+    }
+  }
+  
+  // Animations and Effects
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+    pointer-events: none;
+    opacity: 0.5;
+  }
+}
+
+// Responsive styles
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    transform: translateX(-100%);
+    
+    &.open {
+      transform: translateX(0);
+    }
+  }
+}

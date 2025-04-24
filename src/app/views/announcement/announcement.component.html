@@ -1,0 +1,105 @@
+<div class="announcement-container">
+  <div class="header">
+    <h1>Annonces</h1>
+    <button class="btn-primary" (click)="toggleNewAnnouncementForm()">
+      {{ showNewAnnouncementForm ? 'Annuler' : 'Nouvelle Annonce' }}
+    </button>
+  </div>
+
+  <!-- New Announcement Form -->
+  <div class="announcement-form" *ngIf="showNewAnnouncementForm">
+    <h2>Créer une Nouvelle Annonce</h2>
+    
+    <!-- Form Error Message -->
+    <div class="form-error" *ngIf="formError">
+      <p>{{ formError }}</p>
+    </div>
+    
+    <div class="form-group">
+      <label for="announcementTitle">Titre</label>
+      <input 
+        type="text" 
+        id="announcementTitle" 
+        [(ngModel)]="newAnnouncement.title" 
+        placeholder="Entrez le titre de l'annonce"
+        required
+        [disabled]="isSubmitting"
+      >
+    </div>
+    
+    <div class="form-group">
+      <label for="announcementDescription">Description</label>
+      <textarea 
+        id="announcementDescription" 
+        [(ngModel)]="newAnnouncement.description" 
+        placeholder="Entrez la description de l'annonce"
+        rows="4"
+        required
+        [disabled]="isSubmitting"
+      ></textarea>
+    </div>
+    
+    <div class="form-group">
+      <label>Couleur</label>
+      <div class="color-selector">
+        <div 
+          *ngFor="let color of colorOptions" 
+          class="color-option" 
+          [style.backgroundColor]="color.value"
+          [class.selected]="newAnnouncement.colorHex === color.value"
+          (click)="!isSubmitting && (newAnnouncement.colorHex = color.value)"
+          [attr.title]="color.name"
+          [class.disabled]="isSubmitting"
+        ></div>
+      </div>
+    </div>
+    
+    <div class="form-actions">
+      <button 
+        class="btn-secondary" 
+        (click)="resetNewAnnouncementForm()"
+        [disabled]="isSubmitting"
+      >Réinitialiser</button>
+      <button 
+        class="btn-primary" 
+        (click)="createAnnouncement()"
+        [disabled]="isSubmitting"
+      >
+        <span *ngIf="isSubmitting">Création en cours...</span>
+        <span *ngIf="!isSubmitting">Créer l'annonce</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading indicator -->
+  <div class="loading" *ngIf="isLoading">
+    <p>Chargement des annonces...</p>
+  </div>
+
+  <!-- No announcements message -->
+  <div class="empty-state" *ngIf="!isLoading && announcements.length === 0">
+    <p>Aucune annonce disponible. Créez-en une pour commencer !</p>
+  </div>
+
+  <!-- Announcements List -->
+  <div class="announcements-list" *ngIf="!isLoading && announcements.length > 0">
+    <div 
+      *ngFor="let announcement of announcements" 
+      class="announcement-card"
+      [style.borderLeftColor]="announcement.colorHex"
+    >
+      <div class="card-header">
+        <h3>{{ announcement.title }}</h3>
+        <button class="btn-delete" (click)="deleteAnnouncement(announcement.id)" title="Supprimer l'annonce">
+          <span>×</span>
+        </button>
+      </div>
+      <div class="card-body">
+        <p>{{ announcement.description }}</p>
+      </div>
+      <div class="card-footer">
+        <small>{{ announcement.createdAt | date:'medium' }}</small>
+      </div>
+    </div>
+  </div>
+</div>

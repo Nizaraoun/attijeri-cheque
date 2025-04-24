@@ -1,0 +1,10 @@
+{
+  "hosting": {
+    "public": "dist/attejeri/browser",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}

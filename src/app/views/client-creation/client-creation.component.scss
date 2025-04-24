@@ -1,0 +1,298 @@
+// Client Creation Component Styles
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+// Variables - keeping consistent with other components
+$primary-color: #1e3a8a;
+$secondary-color: #0f2557;
+$accent-color: #64748b;
+$success-color: #10b981;
+$warning-color: #f59e0b;
+$danger-color: #ef4444;
+$info-color: #3b82f6;
+$bg-color: #f8fafc;
+$card-bg: #ffffff;
+$border-color: rgba(226, 232, 240, 0.8);
+$text-primary: #1e293b;
+$text-secondary: #64748b;
+$shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+$border-radius: 12px;
+$border-radius-sm: 8px;
+
+.client-creation-container {
+  font-family: 'Inter', sans-serif;
+  padding: 1.5rem;
+  background-color: $bg-color;
+  min-height: 100vh;
+  color: $text-primary;
+}
+
+// Page header
+.page-header {
+  margin-bottom: 1.5rem;
+  
+  h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: $primary-color;
+    margin: 0 0 0.5rem 0;
+  }
+  
+  .subtitle {
+    color: $text-secondary;
+    font-size: 0.875rem;
+    margin: 0;
+  }
+}
+
+// Alert styles
+.alert {
+  padding: 1rem 1.25rem;
+  border-radius: $border-radius-sm;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  
+  .material-icons {
+    font-size: 20px;
+  }
+  
+  &.alert-success {
+    background-color: rgba($success-color, 0.1);
+    color: $success-color;
+    border-left: 4px solid $success-color;
+  }
+  
+  &.alert-danger {
+    background-color: rgba($danger-color, 0.1);
+    color: $danger-color;
+    border-left: 4px solid $danger-color;
+  }
+}
+
+// Card styles
+.card {
+  background: $card-bg;
+  border-radius: $border-radius;
+  box-shadow: $shadow;
+  margin-bottom: 2rem;
+  
+  .card-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid $border-color;
+    
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: $primary-color;
+      margin: 0 0 0.25rem 0;
+    }
+    
+    p {
+      color: $text-secondary;
+      font-size: 0.875rem;
+      margin: 0;
+    }
+  }
+  
+  .card-body {
+    padding: 1.5rem;
+  }
+}
+
+// Form styles
+form {
+  .form-section {
+    margin-bottom: 2rem;
+    
+    h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: $text-primary;
+      margin: 0 0 1rem 0;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid $border-color;
+    }
+    
+    &.generated-fields {
+      background-color: rgba($info-color, 0.05);
+      padding: 1.25rem;
+      border-radius: $border-radius-sm;
+      border-left: 4px solid $info-color;
+      
+      h3 {
+        color: $info-color;
+        border-bottom-color: rgba($info-color, 0.2);
+      }
+    }
+  }
+  
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -0.75rem 1.5rem -0.75rem;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+    
+    .col {
+      flex: 1;
+      padding: 0 0.75rem;
+      min-width: 0; // Prevents flex item from overflowing
+      
+      @media (max-width: 768px) {
+        flex: 0 0 100%;
+        margin-bottom: 1rem;
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: $text-primary;
+      
+      .required {
+        color: $danger-color;
+      }
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 0.625rem 0.875rem;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      color: $text-primary;
+      background-color: $card-bg;
+      border: 1px solid $border-color;
+      border-radius: $border-radius-sm;
+      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+      
+      &:focus {
+        outline: none;
+        border-color: rgba($primary-color, 0.5);
+        box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+      }
+      
+      &.is-invalid {
+        border-color: $danger-color;
+        
+        &:focus {
+          box-shadow: 0 0 0 3px rgba($danger-color, 0.1);
+        }
+      }
+      
+      &:disabled,
+      &[readonly] {
+        background-color: rgba($border-color, 0.3);
+        opacity: 1;
+      }
+    }
+    
+    .invalid-feedback {
+      display: block;
+      width: 100%;
+      margin-top: 0.25rem;
+      font-size: 0.75rem;
+      color: $danger-color;
+    }
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+    
+    @media (max-width: 576px) {
+      flex-direction: column;
+      
+      button {
+        width: 100%;
+      }
+    }
+  }
+}
+
+// Button styles
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  padding: 0.625rem 1.25rem;
+  border-radius: $border-radius-sm;
+  transition: all 0.2s ease-in-out;
+  border: none;
+  
+  .material-icons {
+    font-size: 18px;
+  }
+  
+  &.btn-primary {
+    background-color: $primary-color;
+    color: white;
+    
+    &:hover, &:focus {
+      background-color: darken($primary-color, 5%);
+    }
+    
+    &:disabled {
+      background-color: lighten($primary-color, 20%);
+      cursor: not-allowed;
+    }
+  }
+  
+  &.btn-secondary {
+    background-color: #e2e8f0;
+    color: $text-primary;
+    
+    &:hover, &:focus {
+      background-color: darken(#e2e8f0, 5%);
+    }
+  }
+  
+  .spinner-border {
+    width: 1rem;
+    height: 1rem;
+    border-width: 0.15em;
+    margin-right: 0.5rem;
+  }
+}
+
+// Spinner animation
+@keyframes spinner-border {
+  to { transform: rotate(360deg); }
+}
+
+.spinner-border {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  vertical-align: text-bottom;
+  border: 0.15em solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spinner-border .75s linear infinite;
+}

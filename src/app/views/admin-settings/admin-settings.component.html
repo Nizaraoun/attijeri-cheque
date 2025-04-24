@@ -1,0 +1,365 @@
+<div class="admin-settings-container">
+  <div class="page-header">
+    <h1>Administration des paramètres</h1>
+    <p class="subtitle">Gestion des critères d'éligibilité et des spécifications des carnets de chèques</p>
+  </div>
+
+  <!-- Alert messages -->
+  <div *ngIf="successMessage" class="alert alert-success">
+    {{ successMessage }}
+  </div>
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Tab navigation -->
+  <div class="nav-tabs">
+    <div class="tab" [class.active]="activeTab === 'eligibility'" (click)="setActiveTab('eligibility')">
+      Critères d'éligibilité
+    </div>
+    <div class="tab" [class.active]="activeTab === 'checkbook'" (click)="setActiveTab('checkbook')">
+      Paramètres des carnets
+    </div>
+    <div class="tab" [class.active]="activeTab === 'derogations'" (click)="setActiveTab('derogations')">
+      Demandes de dérogation
+    </div>
+  </div>
+
+  <!-- Eligibility Settings Tab -->
+  <div class="tab-content" *ngIf="activeTab === 'eligibility'">
+    <div class="card">
+      <div class="card-header">
+        <h2>Paramètres des critères d'éligibilité</h2>
+        <p>Configurez les seuils pour les critères d'éligibilité aux carnets de chèques</p>
+      </div>
+      <div class="card-body">
+        <div *ngIf="isLoading.eligibility" class="text-center p-4">
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden">Chargement...</span>
+          </div>
+        </div>
+
+        <form *ngIf="!isLoading.eligibility && eligibilitySettings" (ngSubmit)="saveEligibilitySettings()">
+          <div class="form-group">
+            <label for="maxCnpValue">Valeur CNP maximum acceptable</label>
+            <input type="text" id="maxCnpValue" name="maxCnpValue" class="form-control" 
+                   [(ngModel)]="eligibilitySettings.maxCnpValue" required>
+            <small class="form-text text-muted">La valeur actuelle est "{{ eligibilitySettings.maxCnpValue }}"</small>
+          </div>
+
+          <div class="form-group">
+            <label for="maxClassificationValue">Valeur de classification maximum acceptable</label>
+            <input type="text" id="maxClassificationValue" name="maxClassificationValue" class="form-control" 
+                   [(ngModel)]="eligibilitySettings.maxClassificationValue" required>
+            <small class="form-text text-muted">La valeur actuelle est "{{ eligibilitySettings.maxClassificationValue }}"</small>
+          </div>
+
+          <div class="form-group">
+            <label for="maxRegularizedWarnings">Nombre maximum de préavis régularisés</label>
+            <input type="number" id="maxRegularizedWarnings" name="maxRegularizedWarnings" class="form-control" 
+                   [(ngModel)]="eligibilitySettings.maxRegularizedWarnings" required min="0">
+            <small class="form-text text-muted">Le client doit avoir moins de cette valeur pour être éligible</small>
+          </div>
+
+          <div class="form-group">
+            <label for="maxChecksInCirculation">Nombre maximum de chèques en circulation</label>
+            <input type="number" id="maxChecksInCirculation" name="maxChecksInCirculation" class="form-control" 
+                   [(ngModel)]="eligibilitySettings.maxChecksInCirculation" required min="0">
+            <small class="form-text text-muted">Le client doit avoir moins de cette valeur pour être éligible</small>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" [disabled]="isLoading.saveEligibility">
+              <span *ngIf="isLoading.saveEligibility" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              Enregistrer les modifications
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Checkbook Settings Tab -->
+  <div class="tab-content" *ngIf="activeTab === 'checkbook'">
+    <div class="card">
+      <div class="card-header">
+        <h2>Paramètres des plages de CMC Net</h2>
+        <p>Configurez les spécifications des carnets de chèques en fonction du CMC Net du client</p>
+      </div>
+      <div class="card-body">
+        <div *ngIf="isLoading.checkbook" class="text-center p-4">
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden">Chargement...</span>
+          </div>
+        </div>
+
+        <div *ngIf="!isLoading.checkbook && chequeBookSettings">
+          <!-- Existing ranges table -->
+          <h3>Plages CMC Net existantes</h3>
+          <div class="table-responsive">
+            <table class="table table-bordered mt-3">
+              <thead>
+                <tr>
+                  <th>CMC Min</th>
+                  <th>CMC Max</th>
+                  <th>Nbre feuilles</th>
+                  <th>Plafond/feuille</th>
+                  <th>Plafond total</th>
+                  <th>Validité (mois)</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let range of chequeBookSettings.cmcNetRanges; let i = index">
+                  <td>{{ range.minValue }}</td>
+                  <td>{{ range.maxValue === maxSafeInteger ? '∞' : range.maxValue }}</td>
+                  <td>{{ range.sheetsCount }}</td>
+                  <td>{{ range.limitPerSheet }}</td>
+                  <td>{{ range.totalLimit }}</td>
+                  <td>{{ range.validityPeriod }}</td>
+                  <td>
+                    <button type="button" class="btn btn-sm btn-danger" (click)="removeCmcNetRange(i)">
+                      Supprimer
+                    </button>
+                  </td>
+                </tr>
+                <tr *ngIf="chequeBookSettings.cmcNetRanges.length === 0">
+                  <td colspan="7" class="text-center">Aucune plage configurée</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Add new range form -->
+          <h3 class="mt-4">Ajouter une nouvelle plage</h3>
+          <div class="card">
+            <div class="card-body">
+              <form (ngSubmit)="addCmcNetRange()">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="minValue">CMC Net Minimum</label>
+                      <input type="number" id="minValue" name="minValue" class="form-control" 
+                             [(ngModel)]="newRange.minValue" required min="0">
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="maxValue">CMC Net Maximum</label>
+                      <input type="number" id="maxValue" name="maxValue" class="form-control" 
+                             [(ngModel)]="newRange.maxValue" required min="0">
+                      <small class="form-text text-muted">Utilisez une grande valeur comme 9999999 pour "illimité"</small>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="sheetsCount">Nombre de feuilles</label>
+                      <input type="number" id="sheetsCount" name="sheetsCount" class="form-control" 
+                             [(ngModel)]="newRange.sheetsCount" required min="1">
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="limitPerSheet">Plafond par feuille</label>
+                      <input type="number" id="limitPerSheet" name="limitPerSheet" class="form-control" 
+                             [(ngModel)]="newRange.limitPerSheet" required min="1">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="totalLimit">Plafond total</label>
+                      <input type="number" id="totalLimit" name="totalLimit" class="form-control" 
+                             [(ngModel)]="newRange.totalLimit" min="0">
+                      <small class="form-text text-muted">Calculé automatiquement si laissé vide</small>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="validityPeriod">Durée de validité (mois)</label>
+                      <input type="number" id="validityPeriod" name="validityPeriod" class="form-control" 
+                             [(ngModel)]="newRange.validityPeriod" required min="1">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary">
+                    Ajouter la plage
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Save button for all changes -->
+          <div class="form-actions mt-4">
+            <button type="button" class="btn btn-success" [disabled]="isLoading.saveCheckbook" (click)="saveChequeBookSettings()">
+              <span *ngIf="isLoading.saveCheckbook" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              Enregistrer toutes les modifications
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Derogation Requests Tab -->
+  <div class="tab-content" *ngIf="activeTab === 'derogations'">
+    <div class="card">
+      <div class="card-header">
+        <h2>Gestion des demandes de dérogation</h2>
+        <p>Traitez les demandes de dérogation soumises par les clients</p>
+      </div>
+      <div class="card-body">
+        <div *ngIf="isLoading.derogations" class="text-center p-4">
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden">Chargement...</span>
+          </div>
+        </div>
+
+        <div *ngIf="!isLoading.derogations">
+          <!-- Derogation requests list -->
+          <div *ngIf="!selectedDerogation" class="table-responsive">
+            <h3>Demandes de dérogation</h3>
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Client</th>
+                  <th>N° Compte</th>
+                  <th>Date demande</th>
+                  <th>Statut</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let request of derogationRequests">
+                  <td>{{ request.requestId }}</td>
+                  <td>{{ request.customerName }}</td>
+                  <td>{{ request.accountNumber }}</td>
+                  <td>{{ formatDate(request.dateRequested) }}</td>
+                  <td>
+                    <span class="badge" [ngClass]="{
+                      'bg-warning': request.status === 'pending',
+                      'bg-success': request.status === 'approved',
+                      'bg-danger': request.status === 'rejected'
+                    }">
+                      {{ request.status === 'pending' ? 'En attente' : 
+                         request.status === 'approved' ? 'Approuvée' : 'Rejetée' }}
+                    </span>
+                  </td>
+                  <td>
+                    <button class="btn btn-sm btn-primary" (click)="viewDerogation(request)">
+                      Détails
+                    </button>
+                  </td>
+                </tr>
+                <tr *ngIf="derogationRequests.length === 0">
+                  <td colspan="6" class="text-center">Aucune demande de dérogation</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Derogation details view -->
+          <div *ngIf="selectedDerogation" class="derogation-details">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h3>Détails de la demande de dérogation</h3>
+              <button class="btn btn-outline-secondary" (click)="selectedDerogation = null">
+                Retour à la liste
+              </button>
+            </div>
+
+            <div class="card mb-4">
+              <div class="card-body">
+                <h4>Informations client</h4>
+                <div class="row">
+                  <div class="col-md-6">
+                    <p><strong>Nom du client:</strong> {{ selectedDerogation.customerName }}</p>
+                    <p><strong>Numéro de compte:</strong> {{ selectedDerogation.accountNumber }}</p>
+                    <p><strong>Date de la demande:</strong> {{ formatDate(selectedDerogation.dateRequested) }}</p>
+                  </div>
+                  <div class="col-md-6">
+                    <p><strong>Statut:</strong> 
+                      <span class="badge" [ngClass]="{
+                        'bg-warning': selectedDerogation.status === 'pending',
+                        'bg-success': selectedDerogation.status === 'approved',
+                        'bg-danger': selectedDerogation.status === 'rejected'
+                      }">
+                        {{ selectedDerogation.status === 'pending' ? 'En attente' : 
+                           selectedDerogation.status === 'approved' ? 'Approuvée' : 'Rejetée' }}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card mb-4">
+              <div class="card-body">
+                <h4>Offre originale</h4>
+                <div class="row">
+                  <div class="col-md-6">
+                    <p><strong>CMC Net:</strong> {{ selectedDerogation.originalOffer.cmcNet }} TND</p>
+                    <p><strong>Nombre de feuilles:</strong> {{ selectedDerogation.originalOffer.sheetsCount }}</p>
+                    <p><strong>Plafond par feuille:</strong> {{ selectedDerogation.originalOffer.limitPerSheet }} TND</p>
+                  </div>
+                  <div class="col-md-6">
+                    <p><strong>Plafond total:</strong> {{ selectedDerogation.originalOffer.totalLimit }} TND</p>
+                    <p><strong>Validité:</strong> {{ selectedDerogation.originalOffer.validityPeriod }} mois</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card mb-4">
+              <div class="card-body">
+                <h4>Demande de dérogation</h4>
+                <div class="row">
+                  <div class="col-md-6" *ngIf="selectedDerogation.requestedSheetsCount">
+                    <p><strong>Nombre de feuilles demandé:</strong> {{ selectedDerogation.requestedSheetsCount }}</p>
+                  </div>
+                  <div class="col-md-6" *ngIf="selectedDerogation.requestedLimitPerSheet">
+                    <p><strong>Plafond par feuille demandé:</strong> {{ selectedDerogation.requestedLimitPerSheet }} TND</p>
+                  </div>
+                </div>
+                <div class="mt-3">
+                  <h5>Motif de la demande:</h5>
+                  <p class="p-3 bg-light rounded">{{ selectedDerogation.reason }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Process derogation form -->
+            <div class="card mb-4" *ngIf="selectedDerogation.status === 'pending'">
+              <div class="card-body">
+                <h4>Traiter la demande</h4>
+                <div class="form-group mb-3">
+                  <label for="derogationStatusComment">Commentaire (optionnel)</label>
+                  <textarea id="derogationStatusComment" name="derogationStatusComment" class="form-control" rows="3"
+                           [(ngModel)]="derogationStatusComment" placeholder="Ajoutez un commentaire concernant cette décision..."></textarea>
+                </div>
+                <div class="d-flex gap-3">
+                  <button class="btn btn-success" [disabled]="isLoading.derogations" (click)="processDerogation('approved')">
+                    <span *ngIf="isLoading.derogations" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Approuver la demande
+                  </button>
+                  <button class="btn btn-danger" [disabled]="isLoading.derogations" (click)="processDerogation('rejected')">
+                    <span *ngIf="isLoading.derogations" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Rejeter la demande
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
